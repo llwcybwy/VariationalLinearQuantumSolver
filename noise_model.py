@@ -17,9 +17,7 @@ depol_error = qml.noise.partial_wires(qml.DepolarizingChannel, 0.0)
 
 fcond_rot, noise_rot = CZ_cond, depol_error
 
-
-
-
 noise_model = qml.NoiseModel(
     {fcond_rot: noise_rot, CZ_cond: depol_error}, 
 )
+
