@@ -18,19 +18,19 @@ import numpy as np
 import pennylane as qml
 from typing import Callable
 from variational_lse_solver import VarLSESolver
-from noise_model import noise_model
+
+qml.QubitStateVector = qml.StatePrep
 
 
 class NoisyVarLSESolver(VarLSESolver):
     """
-    This class implements a variational LSE solver with customizable loss functions and noise.
+    This class implements a variational LSE solver with customizable loss functions.
     """
 
     def __init__(
             self,
             a: np.ndarray | list[str | np.ndarray | Callable],
             b: np.ndarray | Callable,
-            noise_model: qml.NoiseModel = None,
             coeffs: list[float | complex] = None,
             ansatz: Callable = None,
             weights: tuple[int, ...] | np.ndarray = None,
@@ -43,27 +43,31 @@ class NoisyVarLSESolver(VarLSESolver):
             abort: int = 500,
             seed: int = None,
             data_qubits: int = 0,
+            noise_model: qml.NoiseModel = None
     ):
-        self.noise_model=noise_model
+        self.noise_model = noise_model
+
+        if not hasattr(noise_model, "model_map"): print("1")
+        if not isinstance(noise_model.model_map, dict): print("2")
+
+        if not hasattr(self.noise_model, "model_map"): print("3")
+        if not isinstance(self.noise_model.model_map, dict): print("4")
+
         VarLSESolver.__init__(self,a,b,coeffs,ansatz,weights,method,local,lr,steps,epochs,threshold,abort,seed,data_qubits)
 
-    def evaluate(self, weights: np.array) -> np.array:
-        """
-        Return measurement probabilities for the state prepared as solution of the LSE.
-
-        :param weights: Weights for the VQC ansatz.
-        :return: Measurement probabilities for the state V(alpha)
-        """
-        return self.qnode_evaluate_x()(weights).detach().numpy()
-    
     def qnode_evaluate_x(self) -> Callable:
         """
         Quantum node that evaluate V(alpha)
 
         :return: Circuit handle evaluating V(alpha)
         """
+
+        if not hasattr(self.noise_model, "model_map"): print("5")
+        if not isinstance(self.noise_model.model_map, dict): print("6")
+
         dev = qml.device('default.mixed', wires=self.data_qubits)
 
+        @qml.qnode(dev, interface="torch")
         def circuit_evolve_x(weights):
             """
             Circuit that evaluates V(alpha)
@@ -71,29 +75,9 @@ class NoisyVarLSESolver(VarLSESolver):
             :param weights: Parameters for the VQC.
             """
             self.ansatz(weights)
-            circuit_evolve_x = qml.qnode(dev, interface='torch')(qml.probs())
-            noisy_circuit_evolve_x = qml.add_noise(circuit_evolve_x, self.noise_model)
-            return noisy_circuit_evolve_x
+            
+            return qml.probs()
+        
+        noisy_circuit_evolve_x = qml.add_noise(circuit_evolve_x, noise_model=self.noise_model)
 
-        return circuit_evolve_x
-    
-# Test
-if __name__ == "__main__":
-    I_ = np.array([[1.0, 0.0], [0.0, 1.0]])
-    X_ = np.array([[0.0, 1.0], [1.0, 0.0]])
-    Y_ = np.array([[0.0, -1.j], [1.j, 0.0]])
-    Z_ = np.array([[1.0, 0.0], [0.0, -1.0]])
-
-    a = ["III", "XZI", "XII"]
-    b = np.ones(8)/np.sqrt(8)
-
-    NoisyVarLSESolver(a,
-                      b,
-                      noise_model,
-                      coeffs=[1.0, 0.2, 0.2], 
-                      method="hadamard", 
-                      local=True, 
-                      lr=0.1, 
-                      steps=50,
-                      threshold=0.001, 
-                      epochs=10)
+        return noisy_circuit_evolve_x
