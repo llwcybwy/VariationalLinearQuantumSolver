@@ -18,11 +18,12 @@ import numpy as np
 import pennylane as qml
 from typing import Callable
 from variational_lse_solver import VarLSESolver
+from device import Device
 
 qml.QubitStateVector = qml.StatePrep
 
 
-class NoisyVarLSESolver(VarLSESolver):
+class DeviceVarLSESolver(VarLSESolver):
     """
     This class implements a variational LSE solver with customizable loss functions.
     """
@@ -43,9 +44,9 @@ class NoisyVarLSESolver(VarLSESolver):
             abort: int = 500,
             seed: int = None,
             data_qubits: int = 0,
-            noise_model: qml.NoiseModel = None
+            device: Device = None
     ):
-        self.noise_model = noise_model
+        self.device = device
 
         VarLSESolver.__init__(self,a,b,coeffs,ansatz,weights,method,local,lr,steps,epochs,threshold,abort,seed,data_qubits)
 
@@ -56,7 +57,7 @@ class NoisyVarLSESolver(VarLSESolver):
         :return: Circuit handle evaluating V(alpha)
         """
 
-        dev = qml.device('default.mixed', wires=self.data_qubits)
+        dev = self.device.getDevice()
 
         @qml.qnode(dev, interface="torch")
         def circuit_evolve_x(weights):
@@ -68,7 +69,5 @@ class NoisyVarLSESolver(VarLSESolver):
             self.ansatz(weights)
             
             return qml.probs()
-        
-        noisy_circuit_evolve_x = qml.add_noise(circuit_evolve_x, noise_model=self.noise_model)
 
-        return noisy_circuit_evolve_x
+        return circuit_evolve_x
