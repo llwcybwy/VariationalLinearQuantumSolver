@@ -10,8 +10,18 @@ The packages to download along with their versions are as follows.
 `torch~=2.2.2`
 `pennylane~=0.41.1`
 `variational-lse-solver~=1.0`
-`qiskit-??~=??`
+`pennylane-qiskit~=0.41.0.post0`
+`qiskit-aer~=0.16.0`
+
 
 ## Overview of the project
 
 This is where we explain what the different files do. 
+
+### NoiseVarLSESolver
+
+Takes in a custom noise model which is applied to the circuit directly.
+
+### DeviceVarLSESolver
+
+Takes a device that the circuit is run upon, thus indirectly implementing noise.
