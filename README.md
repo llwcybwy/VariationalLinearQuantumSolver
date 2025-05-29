@@ -25,3 +25,15 @@ Takes in a custom noise model which is applied to the circuit directly.
 ### DeviceVarLSESolver
 
 Takes a device that the circuit is run upon, thus indirectly implementing noise.
+
+## Tests
+
+This section details the process tests that are being used. The current scope of the tests relate to seeing how the dynamic ansatz in VQLSs fares vs the non-dynamic ansatz for the following parameters.
+* Condition number of the matrix A.
+* Presence of noise.
+
+### Creating matrix
+
+How are the conditioned matrices being simulated.
+
+### Details of the static ansatz
