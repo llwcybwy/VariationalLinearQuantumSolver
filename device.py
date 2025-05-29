@@ -23,7 +23,7 @@ class Device:
                 except Exception as e:
                     print(e)
             case DeviceType.QISKIT_AER:
-                return qml.device('qiskit.aer', wires=self.wires)
+                return qml.device('qiskit.aer', wires=self.qubits)
             case '':
                 print("Invalid type argument.")
                 return ValueError
