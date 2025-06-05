@@ -2,6 +2,7 @@ import pennylane as qml
 from enum import Enum
 
 class DeviceType(Enum):
+    DEFAULT = 'DEFAULT'
     IBM = 'IBM'
     QISKIT_AER = 'QISKIT_AER'
 
@@ -24,6 +25,8 @@ class Device:
                     print(e)
             case DeviceType.QISKIT_AER:
                 return qml.device('qiskit.aer', wires=self.qubits)
+            case DeviceType.DEFAULT:
+                return qml.device('default.qubit', wires=self.qubits)
             case '':
                 print("Invalid type argument.")
                 return ValueError

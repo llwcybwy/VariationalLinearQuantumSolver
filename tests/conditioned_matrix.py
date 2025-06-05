@@ -2,7 +2,7 @@ import numpy as np
 import scipy.sparse as sp
 from tqdm import tqdm
 
-def create_conditioned_random_matrix(qubits: int, condition_number: float):
+def conditionedMatrix(qubits: int, condition_number: float):
     """
     Generates a random qubit x qubit-matrix with the given condition number.
 
@@ -25,7 +25,7 @@ def create_conditioned_random_matrix(qubits: int, condition_number: float):
     m_conditioned = U @ S_conditioned @ Vh
     return m_conditioned
 
-def create_poisson_matrix(n: int):
+def poissonMatrix(n: int):
     """
     Generates the discrete Poisson equation matrix for an n x n grid (2D Laplacian with Dirichlet boundary conditions).
     :param n: Number of grid points in one dimension.
@@ -43,7 +43,9 @@ def create_poisson_matrix(n: int):
     return A
 
 if __name__ == "__main__":
-    m = create_conditioned_random_matrix(100, 1000)
+    m = conditionedMatrix(100, 1000)
     print(f"condition number for dense is {np.linalg.cond(m)}")
-    m_p = create_poisson_matrix(2**9)
+    m_p = poissonMatrix(4)
+    print(m_p)
+    print(m_p.todense())
     # print(f"condition number for Poisson is {np.linalg.cond(m_p)}")
