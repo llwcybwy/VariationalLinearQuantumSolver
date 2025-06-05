@@ -1,7 +1,7 @@
 import pennylane as qml
 
 def fixed_layered_ansatz(params):
-    wires = range(3)  
+    wires = range(4)  
     depth = 10
     n_qubits = len(wires)
     param_idx = 0
