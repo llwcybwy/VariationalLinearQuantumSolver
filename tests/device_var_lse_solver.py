@@ -47,8 +47,10 @@ class DeviceVarLSESolver(VarLSESolver):
             abort: int = 500,
             seed: int = None,
             data_qubits: int = 0,
-            device: Device = None
+            device: Device = None,
+            silent: bool = False
     ):
+        self.silent = silent
         self.device = device
         if self.device == None:
             self.device = Device(DeviceType.DEFAULT, qubits=data_qubits)
@@ -95,7 +97,7 @@ class DeviceVarLSESolver(VarLSESolver):
 
             # append additional layer to dynamic circuit (skip for first epoch) and re-register optimizer
             if 0 < epoch:
-                print('Increasing circuit depth.', flush=True)
+                if not self.silent: print('Increasing circuit depth.', flush=True)
                 new_weights = np.random.uniform(low=0.0, high=2 * np.pi, size=(1, self.weights.shape[1]))
                 weights = np.concatenate((best_weights, np.stack((new_weights,
                                                                   np.zeros((1, self.weights.shape[1])),
@@ -105,7 +107,10 @@ class DeviceVarLSESolver(VarLSESolver):
 
             # train until either maximum number of steps is reached, early stopping criteria is fulfilled,
             # or no loss function change in several consecutive steps (increase depth in this case)
-            pbar = tqdm(range(self.steps), desc=f'Epoch {epoch+1}/{self.epochs}: ', file=sys.stdout)
+            if self.silent:
+                pbar = range(self.steps)
+            else:
+                pbar = tqdm(range(self.steps), desc=f'Epoch {epoch+1}/{self.epochs}: ', file=sys.stdout)
             for step in pbar:
                 iteration_count[epoch+1] = step+1
                 self.opt.zero_grad()
@@ -119,18 +124,20 @@ class DeviceVarLSESolver(VarLSESolver):
                     best_weights = self.weights.detach().numpy()
                 # test if stopping threshold has been reached
                 if loss.item() < self.threshold:
-                    pbar.close()
-                    print(f'Loss of {loss.item():.10f} below stopping threshold.\nReturning solution.', flush=True)
-                    return self.evaluate(best_weights), best_weights
+                    if not self.silent: 
+                        pbar.close()
+                        print(f'Loss of {loss.item():.10f} below stopping threshold.\nReturning solution.', flush=True)
+                    return self.evaluate(best_weights), best_weights, iteration_count
                 # if loss has not improved in the last `abort` steps terminate this epoch and increase depth
                 if step - best_step >= self.abort:
-                    pbar.close()
-                    print(f'Loss has not improved in last {self.abort} steps.', flush=True) \
+                    if not self.silent: 
+                        pbar.close()
+                        print(f'Loss has not improved in last {self.abort} steps.', flush=True) \
                         if epoch < self.epochs - 1 \
                         else print(f'Loss has not improved in last {self.abort} steps.\nReturning best solution.', flush=True)
                     break
                 # log current loss to progress bar
-                pbar.set_postfix({'best loss': best_loss, 'last improvement in step': best_step, 'loss': loss.item()})
+                if not self.silent: pbar.set_postfix({'best loss': best_loss, 'last improvement in step': best_step, 'loss': loss.item()})
                 # determine gradients and update
                 loss.backward()
                 self.opt.step()
