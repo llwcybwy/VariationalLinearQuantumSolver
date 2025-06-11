@@ -1,5 +1,7 @@
 import pennylane as qml
 from enum import Enum
+from qiskit_aer.noise import NoiseModel
+from qiskit.providers.fake_provider import GenericBackendV2
 
 class DeviceType(Enum):
     DEFAULT = 'DEFAULT'
@@ -24,7 +26,9 @@ class Device:
                 except Exception as e:
                     print(e)
             case DeviceType.QISKIT_AER:
-                return qml.device('qiskit.aer', wires=self.qubits)
+                backend = GenericBackendV2(num_qubits=self.qubits)
+                noise_model = NoiseModel.from_backend(backend)
+                return qml.device('qiskit.aer', wires=self.qubits, noise_model=noise_model)
             case DeviceType.DEFAULT:
                 return qml.device('default.qubit', wires=self.qubits)
             case '':
