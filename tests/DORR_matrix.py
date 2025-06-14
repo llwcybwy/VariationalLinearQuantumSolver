@@ -28,7 +28,7 @@ def build_matrix_from_paulis(pauli_strings, coeffs):
 
 
 def build_pauli_sum_A_strings(qubits, J=0.1, kappa=10):
-    """Construct A and b from Eq. (26) in Bravo-Prieto et al., 2019
+    """Construct A and b from Eq. (26) in Bravo-Prieto et al., 2023
     Returns A as Pauli strings and coefficients, and |b⟩ = H^{⊗n}|0⟩
     """
 
