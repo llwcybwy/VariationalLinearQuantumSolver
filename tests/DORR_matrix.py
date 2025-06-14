@@ -68,18 +68,18 @@ def build_pauli_sum_A_strings(qubits, J=0.1, kappa=10):
     H_raw = qml.Hamiltonian(coeffs, ops)
     Hmat = H_raw.sparse_matrix().toarray()
     eigvals = np.linalg.eigvalsh(Hmat)
-    λ_min = np.min(eigvals)
-    λ_max = np.max(eigvals)
+    E_min = np.min(eigvals)
+    E_max = np.max(eigvals)
 
     # Rescale A to get desired condition number
-    η = (λ_max - kappa * λ_min) / (kappa - 1)
-    ζ = λ_max + η
+    eta = (E_max - kappa * E_min) / (kappa - 1)
+    xi = E_max + eta
 
     # Rescale coefficients
-    coeffs = [c / ζ for c in coeffs]
+    coeffs = [c / xi for c in coeffs]
 
-    # Add η * I term
-    coeffs.append(η / ζ)
+    # Add eta * I term
+    coeffs.append(eta / xi)
     pauli_strings.append('I' * qubits)
 
     # Create |b⟩ = H^{⊗n}|0⟩ = uniform superposition
