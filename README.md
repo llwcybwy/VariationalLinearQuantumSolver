@@ -2,7 +2,7 @@
 
 Written by Joakim Colpier and Anna Ingmer Boye.
 
-This project is based by the VLQS implementation by [article by Meyer et al.](https://arxiv.org/abs/2404.09916). Our project consists of recreating the results provided by the paper, and study what effect quantum noise has on solver. Acces the GitHub for the project using [the following link](link to project).
+This project is based by the VLQS implementation by [article by Meyer et al.](https://arxiv.org/abs/2404.09916). Our project consists of recreating the results provided by the paper, and study what effect quantum noise has on solver. Acces the GitHub for the project using [the following link](https://github.com/llwcybwy/VariationalLinearQuantumSolver).
 
 ## To get started
 
