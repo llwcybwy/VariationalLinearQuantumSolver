@@ -15,6 +15,8 @@ The packages to download along with their versions are as follows.
 `pennylane-qiskit~=0.41.0.post0`
 `qiskit-aer~=0.16.0`
 `matplotlib~=3.10.3`
+`pandas~=2.3.0`
+`scipy~=1.15.3`
 
 
 ## Folder overview
