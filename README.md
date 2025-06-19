@@ -1,6 +1,8 @@
 # Variational Linear Quantum Solver
 
-This project is based by the VLQS implementation by [article by Meyer et al.](https://arxiv.org/abs/2404.09916). Our project consists of recreating the results provided by the paper, and study what effect quantum noise has on solver.
+Written by Joakim Colpier and Anna Ingmer Boye.
+
+This project is based by the VLQS implementation by [article by Meyer et al.](https://arxiv.org/abs/2404.09916). Our project consists of recreating the results provided by the paper, and study what effect quantum noise has on solver. Acces the GitHub for the project using [the following link](link to project).
 
 ## To get started
 
@@ -12,28 +14,27 @@ The packages to download along with their versions are as follows.
 `variational-lse-solver~=1.0`
 `pennylane-qiskit~=0.41.0.post0`
 `qiskit-aer~=0.16.0`
+`matplotlib~=3.10.3`
 
 
-## Overview of the project
+## Folder overview
 
-This is where we explain what the different files do. 
+This section will contain an overview of the content of the GitHub page.
 
-### NoiseVarLSESolver
+### Code
 
-Takes in a custom noise model which is applied to the circuit directly.
+Contains the runnable code for the project, including tests, recreation of Meyer et al.'s results, as well as custom classes and functions. Code which is not to be ran have the python file format, whereas tests and recreation of results (files that should be ran) have the file format Jupyter Notebook. 
 
-### DeviceVarLSESolver
+### Presentation
 
-Takes a device that the circuit is run upon, thus indirectly implementing noise.
+Presented for the course WI4650 Quantum Algorithms, 16 June 2025 at TU Delft, detailing our findings and process.
 
-## Tests
+### Texts
 
-This section details the process tests that are being used. The current scope of the tests relate to seeing how the dynamic ansatz in VQLSs fares vs the non-dynamic ansatz for the following parameters.
-* Condition number of the matrix A.
-* Presence of noise.
+Most relevant texts provided with the course project.
 
-### Creating matrix
+## Acknowledgements
 
-How are the conditioned matrices being simulated.
-
-### Details of the static ansatz
+- The project mainly bases itself on the works of Bravo-Prieto et al., Patil et al. and Meyer et al. (see presentation for correct referrencing and references to other works that have been used to a lesser extent).
+- The code is mainly adapted from Meyre et al. ([link to GitHub](https://github.com/nicomeyer96/variational-lse-solver)).
+- The presentation template used for the presentation was created by Erwin Walraven and Maarten Abbink.
